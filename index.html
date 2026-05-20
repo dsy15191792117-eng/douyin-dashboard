@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抖音视频数据看板</title>
+<style>
+:root { --primary:#fe2c55; --primary-light:#ff4d6d; --bg:#f8f9fa; --card:#fff; --text:#333; --text-light:#666; --border:#e8e8e8; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+header{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;padding:30px;border-radius:16px;margin-bottom:24px;box-shadow:0 4px 20px rgba(254,44,85,0.2)}
+header h1{font-size:28px;margin-bottom:8px} header p{opacity:.9;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid var(--border)}
+.card h2{font-size:14px;color:var(--text-light);margin-bottom:10px}
+.stat-number{font-size:28px;font-weight:700;color:var(--primary)}
+.stat-label{font-size:12px;color:var(--text-light);margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--text-light);font-weight:500;background:#fafafa;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{background:#f0f0f0}
+th .sort-icon{margin-left:4px;font-size:11px;color:#bbb}
+th.sort-asc .sort-icon::after{content:" ▲";color:var(--primary)}
+th.sort-desc .sort-icon::after{content:" ▼";color:var(--primary)}
+tr:hover td{background:#fafafa}
+.title-cell{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>抖音视频数据看板</h1>
+<p>共 40 个作品的数据统计</p>
+</header>
+<div class="grid">
+<div class="card"><h2>昨日播放量</h2><div class="stat-number">0</div><div class="stat-label">昨天所有作品播放</div></div>
+<div class="card"><h2>昨日点赞量</h2><div class="stat-number">0</div><div class="stat-label">昨天所有作品点赞</div></div>
+<div class="card"><h2>总播放量</h2><div class="stat-number">834,908</div><div class="stat-label">累计播放次数</div></div>
+<div class="card"><h2>总点赞</h2><div class="stat-number">26,981</div><div class="stat-label">累计点赞数</div></div>
+<div class="card"><h2>视频总数</h2><div class="stat-number">40</div><div class="stat-label">已统计作品数</div></div>
+<div class="card"><h2>粉丝净增</h2><div class="stat-number">2,758</div><div class="stat-label">累计新增粉丝</div></div>
+</div>
+<div class="card" style="margin-bottom:24px">
+<h2 style="margin-bottom:16px">视频数据明细</h2>
+<div style="overflow-x:auto">
+<table id="dataTable">
+<thead>
+<tr>
+<th onclick="sortTable('publish_time')">发布日期<span class="sort-icon"></span></th>
+<th onclick="sortTable('title')">视频标题<span class="sort-icon"></span></th>
+<th onclick="sortTable('play_count')">播放量<span class="sort-icon"></span></th>
+<th onclick="sortTable('like_count')">点赞量<span class="sort-icon"></span></th>
+<th onclick="sortTable('comment_count')">评论量<span class="sort-icon"></span></th>
+<th onclick="sortTable('share_count')">分享<span class="sort-icon"></span></th>
+<th onclick="sortTable('collect_count')">收藏量<span class="sort-icon"></span></th>
+<th onclick="sortTable('follower_gain')">涨粉数<span class="sort-icon"></span></th>
+<th onclick="sortTable('completion_rate_5s')">5s完播率<span class="sort-icon"></span></th>
+<th onclick="sortTable('completion_rate')">完播率<span class="sort-icon"></span></th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<script>
+const rawData = [{"title": "依旧是人民的班长“编程猫大人” 本喵急急急，这样的班长到底是谁在拥有啊～#搞笑 #校园 #人民的班长 #抽象的编程猫 #ai创作浪潮计划", "publish_time": "2026-05-15 17:55:58", "publish_date": "2026-05-15", "play_count": 26606, "like_count": 1257, "comment_count": 47, "share_count": 82, "collect_count": 316, "follower_gain": 17, "completion_rate": 0.603884, "completion_rate_5s": 0.603884}, {"title": "当你发现编程猫也可以是不知火舞 请称本喵为“不知火喵”～#编程猫 #搞笑 #当不知火舞遇到方言 #不知火舞 #抽象的编程猫", "publish_time": "2026-05-14 17:51:07", "publish_date": "2026-05-14", "play_count": 13651, "like_count": 851, "comment_count": 92, "share_count": 70, "collect_count": 164, "follower_gain": 34, "completion_rate": 0.329258, "completion_rate_5s": 0.4573}, {"title": "可以改变世界的编程随便学？！！ 想知道成为本喵的朋友（学员）到底有多爽吗？#搞笑  #好朋友 #豆包 #刀盾狗 #抽象的编程猫", "publish_time": "2026-05-12 18:08:44", "publish_date": "2026-05-12", "play_count": 10256, "like_count": 411, "comment_count": 97, "share_count": 7, "collect_count": 95, "follower_gain": 46, "completion_rate": 0.136832, "completion_rate_5s": 0.437317}, {"title": "本喵陷入了来自AI的幻觉 为什么循环积木在煮火锅时，筷子要和编程猫跳舞？#科普 #吃菌子 #幻觉 #搞笑 #抽象的编程猫", "publish_time": "2026-05-11 17:44:23", "publish_date": "2026-05-11", "play_count": 9516, "like_count": 611, "comment_count": 52, "share_count": 292, "collect_count": 76, "follower_gain": 12, "completion_rate": 0.123257, "completion_rate_5s": 0.467965}, {"title": "本视频由Ai生成… 是Ai，也是爱～\n快乐的长大吧本喵的朋友们！#教育 #内容由爱生成 #ai创作浪潮计划  #公益短片  #母爱伟大", "publish_time": "2026-05-10 15:56:30", "publish_date": "2026-05-10", "play_count": 15685, "like_count": 1181, "comment_count": 70, "share_count": 65, "collect_count": 130, "follower_gain": 8, "completion_rate": 0.165191, "completion_rate_5s": 0.445364}, {"title": "编程猫陪孩子一起，把爱亲手交给妈妈～ 🎁1000份惊喜已送达，1000句“妈妈我爱你”已签收！\n妈妈们，节日快乐🌹\n#编程猫 #母亲节", "publish_time": "2026-05-10 09:00:00", "publish_date": "2026-05-10", "play_count": 5517, "like_count": 129, "comment_count": 37, "share_count": 1, "collect_count": 15, "follower_gain": 1, "completion_rate": 0.005287, "completion_rate_5s": 0.205882}, {"title": "评论区都在问本喵的蓝V去哪了… 如果能回到过去\n本喵一定要提醒当时的自己——\n别搞抽象！！！#星际穿越 #提醒过去的自己 #搞笑  #抽象的编程猫", "publish_time": "2026-05-09 18:58:28", "publish_date": "2026-05-09", "play_count": 82384, "like_count": 1479, "comment_count": 160, "share_count": 87, "collect_count": 777, "follower_gain": 960, "completion_rate": 0.479895, "completion_rate_5s": 0.5678}, {"title": "假如编程猫说什么都是真的… 那本喵可就不客气啦！#搞笑 #校园 #人类一败涂地 #ai视频 #抽象的编程猫", "publish_time": "2026-05-07 19:36:46", "publish_date": "2026-05-07", "play_count": 17185, "like_count": 1293, "comment_count": 33, "share_count": 144, "collect_count": 290, "follower_gain": 31, "completion_rate": 0.152475, "completion_rate_5s": 0.556204}, {"title": "假如编程猫说什么都是真的… 那本喵可就不客气啦！#搞笑 #校园 #人类一败涂地 #ai动画 #抽象的编程猫", "publish_time": "2026-05-07 17:47:58", "publish_date": "2026-05-07", "play_count": 0, "like_count": 8, "comment_count": 7, "share_count": 0, "collect_count": 0, "follower_gain": 0, "completion_rate": 0.146067, "completion_rate_5s": 0.489796}, {"title": "谁说本喵只会搞抽象的，站出来！！！ 节后第一天，搞点酷炫的#ai动画 #水墨 #武侠 #抽象的编程猫", "publish_time": "2026-05-06 17:51:51", "publish_date": "2026-05-06", "play_count": 7600, "like_count": 179, "comment_count": 18, "share_count": 2, "collect_count": 19, "follower_gain": 4, "completion_rate": 0.060156, "completion_rate_5s": 0.214753}, {"title": "谁不想急头白脸有一个这样的班长呢 平时叫我编程猫不挑你理，现在请叫我“编程猫大人”#搞笑 #校园 #人民的班长 #抽象的编程猫 #ai创作浪潮计划", "publish_time": "2026-05-04 16:33:46", "publish_date": "2026-05-04", "play_count": 197349, "like_count": 2878, "comment_count": 98, "share_count": 91, "collect_count": 611, "follower_gain": 164, "completion_rate": 0.541243, "completion_rate_5s": 0.702745}, {"title": "离谱数学答案（编程猫版）第二期来咯 假期第一天，有没有好好学编程？！#搞笑 #离谱数学答案 #校园 #ai视频 #抽象的编程猫", "publish_time": "2026-05-01 17:24:35", "publish_date": "2026-05-01", "play_count": 19223, "like_count": 470, "comment_count": 59, "share_count": 52, "collect_count": 184, "follower_gain": 63, "completion_rate": 0.396736, "completion_rate_5s": 0.534236}, {"title": "五一就这样水灵灵的过完了 （重发一遍）5秒钟回顾你的假期！！！\n你们都放假几天说出来让本猫眼红🤪#五一假期 #精神状态belike #内容过于真实 #抽象的编程猫", "publish_time": "2026-04-30 21:23:12", "publish_date": "2026-04-30", "play_count": 9562, "like_count": 134, "comment_count": 27, "share_count": 24, "collect_count": 28, "follower_gain": 3, "completion_rate": 0.434489, "completion_rate_5s": 0.434489}, {"title": "五一就这样水灵灵的过完了 5秒钟回顾你的假期！！！\n你们都放假几天说出来让本猫眼红🤪#五一假期 #精神状态belike #内容过于真实 #抽象的编程猫", "publish_time": "2026-04-30 16:44:14", "publish_date": "2026-04-30", "play_count": 0, "like_count": 74, "comment_count": 19, "share_count": 2, "collect_count": 10, "follower_gain": 0, "completion_rate": 0.38038, "completion_rate_5s": 0.38038}, {"title": "五一放假前的belike 是谁还没放假？是本喵！！\n快给本喵推荐一个人少景美的好地方！！！#老师和学生 #五一放假倒计时 #五一 #抽象的编程猫", "publish_time": "2026-04-29 14:03:58", "publish_date": "2026-04-29", "play_count": 11393, "like_count": 335, "comment_count": 70, "share_count": 249, "collect_count": 45, "follower_gain": 10, "completion_rate": 0.293683, "completion_rate_5s": 0.293683}, {"title": "4月30号上完课后喵将会这样…#五一假期 #搞笑 #校园  #五一放假我就这样走出去 #抽象的编程猫", "publish_time": "2026-04-28 18:51:35", "publish_date": "2026-04-28", "play_count": 9590, "like_count": 299, "comment_count": 59, "share_count": 31, "collect_count": 50, "follower_gain": 9, "completion_rate": 0.193889, "completion_rate_5s": 0.344254}, {"title": "本猫就是传说中父母眼里的完美孩子（视频仅供娱乐）#搞笑 #抽象 #校园 #抽象的编程猫 #AI创作浪潮计划", "publish_time": "2026-04-27 19:06:39", "publish_date": "2026-04-27", "play_count": 33867, "like_count": 1029, "comment_count": 55, "share_count": 626, "collect_count": 266, "follower_gain": 17, "completion_rate": 0.420978, "completion_rate_5s": 0.513632}, {"title": "关于本喵变成大爷这件事… 所以，大声告诉我：编什么猫？#经典片段 #ai #搞笑 #夏洛特烦恼  #抽象的编程猫", "publish_time": "2026-04-26 10:25:26", "publish_date": "2026-04-26", "play_count": 8994, "like_count": 781, "comment_count": 31, "share_count": 6, "collect_count": 49, "follower_gain": 5, "completion_rate": 0.164998, "completion_rate_5s": 0.283549}, {"title": "是不是你！！！ 那些年和本喵一起算出的离谱数学答案#搞笑 #离谱数学答案  #校园 #ai视频 #抽象的编程猫", "publish_time": "2026-04-24 18:00:08", "publish_date": "2026-04-24", "play_count": 81832, "like_count": 2889, "comment_count": 286, "share_count": 166, "collect_count": 1201, "follower_gain": 884, "completion_rate": 0.359764, "completion_rate_5s": 0.564491}, {"title": "喵的办公室炸了，罪魁祸首居然是… 又是被豆包做局的一天，喵～#相信ai的下场 #豆包 #搞笑   #ai视频 #抽象的编程猫", "publish_time": "2026-04-22 18:43:08", "publish_date": "2026-04-22", "play_count": 75203, "like_count": 1777, "comment_count": 124, "share_count": 57, "collect_count": 950, "follower_gain": 141, "completion_rate": 0.461494, "completion_rate_5s": 0.628307}, {"title": "邪恶编程猫上线！ 看谁还敢欺负本喵的朋友#动画 #整蛊 #抽象 #ai视频 #抽象的编程猫", "publish_time": "2026-04-21 18:51:47", "publish_date": "2026-04-21", "play_count": 14451, "like_count": 287, "comment_count": 53, "share_count": 10, "collect_count": 79, "follower_gain": 30, "completion_rate": 0.230757, "completion_rate_5s": 0.443568}, {"title": "喵要让不点赞的坏人通通飞上天～ #动画 #抽象  #整蛊  #ai视频 #抽象的编程猫", "publish_time": "2026-04-21 18:34:34", "publish_date": "2026-04-21", "play_count": 0, "like_count": 1, "comment_count": 3, "share_count": 0, "collect_count": 1, "follower_gain": 0, "completion_rate": 0.190476, "completion_rate_5s": 0.333333}, {"title": "阿凡喵怎么天天都这么开心 当然是因为喵有你们呀～#阿凡提 #翻拍 #阿凡提怎么天天都这么开心 #二次元 #抽象的编程猫", "publish_time": "2026-04-20 18:43:19", "publish_date": "2026-04-20", "play_count": 12075, "like_count": 197, "comment_count": 34, "share_count": 21, "collect_count": 58, "follower_gain": 15, "completion_rate": 0.411133, "completion_rate_5s": 0.509938}, {"title": "心理学真的能看透喵的心吗？ 快找朋友试试，心理学上说看谁就是喜欢谁#捧腹大笑 #ai #二次元  #抽象 #抽象的编程猫", "publish_time": "2026-04-18 19:07:02", "publish_date": "2026-04-18", "play_count": 23430, "like_count": 1144, "comment_count": 79, "share_count": 452, "collect_count": 129, "follower_gain": 28, "completion_rate": 0.324062, "completion_rate_5s": 0.565935}, {"title": "编程猫本猫又开始摆摊营业啦～ 今天买的是煎饼果子，想来尝尝吗？#ai街头煎饼制作记 #二次元  #谁家小猫还没个绝活了 #摆摊 #抽象的编程猫", "publish_time": "2026-04-17 18:47:39", "publish_date": "2026-04-17", "play_count": 14563, "like_count": 76, "comment_count": 28, "share_count": 24, "collect_count": 32, "follower_gain": 9, "completion_rate": 0.403555, "completion_rate_5s": 0.550942}, {"title": "阿短，别走～ 假如爱真的存在，那它究竟是什么？#抽象的编程猫 #二次元 #爱是什么 #假如爱真的存在 #ai创作浪潮计划", "publish_time": "2026-04-16 17:55:22", "publish_date": "2026-04-16", "play_count": 8542, "like_count": 59, "comment_count": 24, "share_count": 18, "collect_count": 13, "follower_gain": 3, "completion_rate": 0.223394, "completion_rate_5s": 0.3245}, {"title": "家人们，你们说大师算的准吗？ 点赞不接喵的霉运\n#官方整活 #逗你一笑 #万万没想到 #抽象的编程猫", "publish_time": "2026-04-14 18:53:55", "publish_date": "2026-04-14", "play_count": 9724, "like_count": 174, "comment_count": 21, "share_count": 3, "collect_count": 23, "follower_gain": 3, "completion_rate": 0.239725, "completion_rate_5s": 0.371678}, {"title": "蹦沙卡拉卡崩沙卡拉卡唔哦～ #官方整活 #精神状态belike  #这才是猛男该跳的舞蹈 #蹦沙卡拉卡 #抽象的编程猫", "publish_time": "2026-04-13 18:24:22", "publish_date": "2026-04-13", "play_count": 5438, "like_count": 62, "comment_count": 23, "share_count": 0, "collect_count": 13, "follower_gain": 2, "completion_rate": 0.151382, "completion_rate_5s": 0.375323}, {"title": "喵这该死的魅力～ 不多说，喵就是这条街上最靓的仔#原来回头率是这么来的吗 #回头率爆棚 #百分百回头率 #官方整活 #抽象的编程猫", "publish_time": "2026-04-11 18:58:14", "publish_date": "2026-04-11", "play_count": 9842, "like_count": 91, "comment_count": 37, "share_count": 2, "collect_count": 23, "follower_gain": 2, "completion_rate": 0.291964, "completion_rate_5s": 0.518164}, {"title": "对方紧急撤回了一碗蛋炒饭！#当我打电话说没钱吃饭时 #意想不到的结局 #ai视频 #可爱 #抽象的编程猫", "publish_time": "2026-04-09 18:40:34", "publish_date": "2026-04-09", "play_count": 15071, "like_count": 247, "comment_count": 77, "share_count": 28, "collect_count": 75, "follower_gain": 11, "completion_rate": 0.488151, "completion_rate_5s": 0.51461}, {"title": "编程猫也是我的白月光 #聊天表情包", "publish_time": "2026-04-09 17:02:40", "publish_date": "2026-04-09", "play_count": 6212, "like_count": 78, "comment_count": 11, "share_count": 3, "collect_count": 20, "follower_gain": 8, "completion_rate": 0.047605, "completion_rate_5s": 0.247741}, {"title": "人！你终于放学啦～ 人，你饿了吧？要开心哦～#治愈 #可爱 #编程猫 #ai视频", "publish_time": "2026-04-08 18:59:30", "publish_date": "2026-04-08", "play_count": 11182, "like_count": 88, "comment_count": 25, "share_count": 5, "collect_count": 16, "follower_gain": 2, "completion_rate": 0.225942, "completion_rate_5s": 0.35377}, {"title": "编程猫摆摊卖馄饨中... #AI街头馄饨摊的日常 #谁家小猫还没个绝活了  #摆摊 #抽象的编程猫", "publish_time": "2026-04-07 18:32:16", "publish_date": "2026-04-07", "play_count": 16207, "like_count": 96, "comment_count": 28, "share_count": 23, "collect_count": 14, "follower_gain": 2, "completion_rate": 0.507608, "completion_rate_5s": 0.563193}, {"title": "编程猫今天不搞抽象 放假第一天：猫来大战刀盾狗#我的刀盾 #官方整活 #抽象的编程猫 #雾山五行 #ai创作浪潮计划", "publish_time": "2026-04-04 15:55:28", "publish_date": "2026-04-04", "play_count": 8972, "like_count": 54, "comment_count": 14, "share_count": 3, "collect_count": 10, "follower_gain": 1, "completion_rate": 0.135321, "completion_rate_5s": 0.354726}, {"title": "这一天终究是来了吗～ 不装了，摊牌了！我就是齐天大喵！#官方整活 #人前显圣 #抽象的编程猫 #ai创作浪潮计划", "publish_time": "2026-04-02 18:25:51", "publish_date": "2026-04-02", "play_count": 9564, "like_count": 424, "comment_count": 44, "share_count": 12, "collect_count": 32, "follower_gain": 4, "completion_rate": 0.056001, "completion_rate_5s": 0.299951}, {"title": "喵～跳跃不是罪过 网瘾小点的都不知道阿猫在干什么#官方整活 #跳跃不是罪过 #禅者行脚 #禅者行脚舞蹈挑战 #抽象的编程猫", "publish_time": "2026-04-01 12:14:14", "publish_date": "2026-04-01", "play_count": 13920, "like_count": 249, "comment_count": 36, "share_count": 15, "collect_count": 39, "follower_gain": 3, "completion_rate": 0.17686, "completion_rate_5s": 0.233354}, {"title": "别笑！！！喵的舞蹈很神圣～喵的舞姿很曼妙～喵的精神状态belike～#外星小绿 #哈吉米 #官方整活 #抽象 #万物皆可外星小绿猫", "publish_time": "2026-03-31 18:52:53", "publish_date": "2026-03-31", "play_count": 9729, "like_count": 389, "comment_count": 30, "share_count": 7, "collect_count": 30, "follower_gain": 8, "completion_rate": 0.080905, "completion_rate_5s": 0.22309}, {"title": "你是否在抖音刷到过一只狐狸……不对，是猫～\n#官方整活 #雪山救狐狸 #邵氏电影 #无厘头剧情 #ai创作浪潮计划", "publish_time": "2026-03-30 17:44:34", "publish_date": "2026-03-30", "play_count": 10573, "like_count": 66, "comment_count": 16, "share_count": 4, "collect_count": 21, "follower_gain": 2, "completion_rate": 0.09305, "completion_rate_5s": 0.348528}, {"title": "上春晚啦～快来领取编程猫的新年礼物！！ （搜索“创作者送福利”参与机器人抽奖）\n编程猫@编程猫 携手战略合作伙伴\n@Unitree宇树科技 @松延动力NOETIX 一起\n把春晚同款机器人带进学校编程课堂 \n大年初一，编程猫给大家拜年啦～\n特别送出“宇树科技Go2 Air机器狗”\n（抖音搜索“创作者送福利”找到编程猫就可以参与抽奖哦！）\n#编程猫 #春晚机器人 #宇树科技 #松延动力  #抖音作者新春送礼", "publish_time": "2026-02-17 10:15:22", "publish_date": "2026-02-17", "play_count": 0, "like_count": 4476, "comment_count": 440, "share_count": 66, "collect_count": 299, "follower_gain": 112, "completion_rate": 0.219686, "completion_rate_5s": 0.492073}, {"title": "✨编程猫独家专访IOI金牌选手妈妈！ #编程猫  #编程  #人工智能  #IOI  #信奥赛", "publish_time": "2026-01-28 15:11:29", "publish_date": "2026-01-28", "play_count": 0, "like_count": 658, "comment_count": 119, "share_count": 38, "collect_count": 136, "follower_gain": 104, "completion_rate": 0.020697, "completion_rate_5s": 0.501816}];
+let sortKey = 'publish_time';
+let sortDesc = true;
+
+function sortData() {
+  return [...rawData].sort((a,b) => {
+    let av = a[sortKey], bv = b[sortKey];
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    if (av < bv) return sortDesc ? 1 : -1;
+    if (av > bv) return sortDesc ? -1 : 1;
+    return 0;
+  });
+}
+
+function renderTable() {
+  const sorted = sortData();
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = sorted.map(r => {
+    const title = r.title || '';
+    const shortTitle = title.length > 25 ? title.slice(0,25) + '...' : title;
+    const cr5 = (r.completion_rate_5s * 100).toFixed(1) + '%';
+    const cr = (r.completion_rate * 100).toFixed(1) + '%';
+    return `<tr>
+      <td>${r.publish_date || ''}</td>
+      <td class="title-cell" title="${title.replace(/"/g,'&quot;')}">${shortTitle}</td>
+      <td>${(r.play_count||0).toLocaleString()}</td>
+      <td>${(r.like_count||0).toLocaleString()}</td>
+      <td>${(r.comment_count||0).toLocaleString()}</td>
+      <td>${(r.share_count||0).toLocaleString()}</td>
+      <td>${(r.collect_count||0).toLocaleString()}</td>
+      <td>${(r.follower_gain||0).toLocaleString()}</td>
+      <td>${cr5}</td>
+      <td>${cr}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateSortIcons() {
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sort-asc','sort-desc'));
+  const map = {'publish_time':0,'title':1,'play_count':2,'like_count':3,'comment_count':4,'share_count':5,'collect_count':6,'follower_gain':7,'completion_rate_5s':8,'completion_rate':9};
+  const idx = map[sortKey];
+  if (idx !== undefined) document.querySelectorAll('th')[idx].classList.add(sortDesc ? 'sort-desc' : 'sort-asc');
+}
+
+function sortTable(key) {
+  if (sortKey === key) sortDesc = !sortDesc;
+  else { sortKey = key; sortDesc = (key !== 'title'); }
+  renderTable();
+  updateSortIcons();
+}
+
+renderTable();
+updateSortIcons();
+</script>
+</body>
+</html>
